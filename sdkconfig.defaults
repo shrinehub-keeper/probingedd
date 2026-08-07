@@ -34,14 +34,18 @@ CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y
 CONFIG_BT_ENABLED=y
 CONFIG_BT_CONTROLLER_ONLY=y
 CONFIG_BTDM_CTRL_MODE_BTDM=y
-# Should be at least one more than CONFIG_BLUEPAD32_MAX_DEVICES.
-CONFIG_BTDM_CTRL_BR_EDR_MAX_ACL_CONN=5
-CONFIG_BTDM_CTRL_BLE_MAX_CONN=5
+# Should be at least one more than CONFIG_BLUEPAD32_MAX_DEVICES (1), so 2.
+# These each reserve static connection-context buffers in the BT
+# controller's .bss, so leave them at the minimum needed - the previous
+# value of 5 (room for 5 connections when only 1 is ever used) was
+# wasting internal DRAM we don't have to spare once WiFi is linked in too.
+CONFIG_BTDM_CTRL_BR_EDR_MAX_ACL_CONN=2
+CONFIG_BTDM_CTRL_BLE_MAX_CONN=2
 CONFIG_BTDM_CTRL_BR_EDR_MAX_SYNC_CONN=0
 CONFIG_BTDM_CTRL_AUTO_LATENCY=y
 CONFIG_BTDM_CTRL_MODEM_SLEEP=n
 
-CONFIG_BLUEPAD32_MAX_DEVICES=2
+CONFIG_BLUEPAD32_MAX_DEVICES=1
 CONFIG_BLUEPAD32_PLATFORM_CUSTOM=y
 # Needs to be disabled: we have no I2S mic/speaker on the BTstack side.
 CONFIG_BTSTACK_AUDIO=n
