@@ -1,0 +1,7 @@
+# Name,   Type, SubType, Offset,  Size, Flags
+# ROMs and save-states live on the SD card now (no appfs), so flash only
+# needs to hold the firmware itself plus NVS and a small coredump area.
+nvs,      data, nvs,     0x9000,  0x6000,
+phy_init, data, phy,     0xf000,  0x1000,
+coredump, data, coredump,0x10000, 0x10000,
+factory,  app,  factory, 0x20000, 0x1E0000,
