@@ -50,10 +50,14 @@ boards already use for the camera's SD slot.
 ### Building
 
 1. Install [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/) v5.3.
-2. Fetch submodules (this pulls in Bluepad32 and, nested inside it, BTstack):
+2. Fetch submodules (this pulls in Bluepad32 and, nested inside it, BTstack). The submodule is
+   configured `shallow = true`, so this only fetches the pinned commit's history, not the full
+   repos:
    ```sh
-   git submodule update --init --recursive
+   git submodule update --init --recursive --jobs 8
    ```
+   `--jobs 8` fetches nested submodules in parallel instead of one at a time; drop it (or lower
+   the number) if that saturates your connection.
 3. One-time step: install BTstack as a component inside the Bluepad32 checkout (this is
    Bluepad32's own integration script, not something we can vendor statically):
    ```sh
