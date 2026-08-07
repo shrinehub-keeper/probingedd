@@ -50,6 +50,14 @@ boards already use for the camera's SD slot.
 ### Building
 
 1. Install [ESP-IDF](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/) v5.3.
+   ESP-IDF itself has dozens of submodules (mbedTLS, per-chip support libs, etc.), so a plain
+   `git clone --recursive` of it is the slow part people usually hit - use `--depth 1
+   --shallow-submodules` to skip that history too:
+   ```sh
+   git clone -b v5.3 --recursive --depth 1 --shallow-submodules \
+     https://github.com/espressif/esp-idf.git
+   cd esp-idf && ./install.sh esp32 && . ./export.sh
+   ```
 2. Fetch submodules (this pulls in Bluepad32 and, nested inside it, BTstack). The submodule is
    configured `shallow = true`, so this only fetches the pinned commit's history, not the full
    repos:
