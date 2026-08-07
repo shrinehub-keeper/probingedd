@@ -20,6 +20,13 @@ CONFIG_ESP32_XTAL_FREQ_AUTO=y
 CONFIG_SPIRAM=y
 CONFIG_SPIRAM_USE_MALLOC=y
 CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=16384
+# The smsplus core keeps its working set (VDP VRAM, Z80 RAM, tile-render
+# cache) as plain static/global arrays rather than heap allocations, so it
+# doesn't benefit from CONFIG_SPIRAM_USE_MALLOC above. None of it is touched
+# from an ISR or needs DMA, so let the linker spill .bss into PSRAM too -
+# otherwise those globals alone overflow dram0_0_seg once WiFi+BT are linked
+# in.
+CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY=y
 
 #
 # Bluetooth (classic BR/EDR + BLE, needed by Bluepad32 for DS4/Wiimote/etc)
