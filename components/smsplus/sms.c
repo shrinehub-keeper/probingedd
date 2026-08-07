@@ -1,8 +1,9 @@
 
 #include "shared.h"
+#include "esp_attr.h"
 
-/* SMS context */
-t_sms sms;
+/* SMS context - 8KB+ of Z80 RAM, pinned to PSRAM (see render.c). */
+EXT_RAM_BSS_ATTR t_sms sms;
 z80_t *Z80_Context=NULL;
 static z80_t z80;
 int z80_ICount;

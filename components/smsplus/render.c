@@ -1,5 +1,6 @@
 
 #include "shared.h"
+#include "esp_attr.h"
 
 /* Background drawing function */
 void (*render_bg)(int line);
@@ -14,9 +15,12 @@ uint16 pixel[PALETTE_SIZE];
 #define CACHEDTILES 512
 #define ALIGN_DWORD 1 //esp doesn't support unaligned word writes
 
-int16 cachePtr[512*4];				//(tile+attr<<9) -> cache tile store index (i<<6); -1 if not cached
-uint8 cacheStore[CACHEDTILES*64];	//Tile store
-uint8 cacheStoreUsed[CACHEDTILES];	//Marks if a tile is used
+// ~37KB combined - too big for internal DRAM alongside WiFi/BT, so pin these
+// explicitly to PSRAM rather than relying on CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY
+// (which doesn't redirect these particular non-static globals - see sms.c/vdp.c).
+EXT_RAM_BSS_ATTR int16 cachePtr[512*4];			//(tile+attr<<9) -> cache tile store index (i<<6); -1 if not cached
+EXT_RAM_BSS_ATTR uint8 cacheStore[CACHEDTILES*64];	//Tile store
+EXT_RAM_BSS_ATTR uint8 cacheStoreUsed[CACHEDTILES];	//Marks if a tile is used
 
 uint8 is_vram_dirty;
 

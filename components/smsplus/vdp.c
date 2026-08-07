@@ -1,10 +1,11 @@
 #pragma GCC optimize ("O2")
 
 #include "shared.h"
+#include "esp_attr.h"
 
 
-/* VDP context */
-t_vdp vdp;
+/* VDP context - 16KB+ of VRAM, pinned to PSRAM (see render.c). */
+EXT_RAM_BSS_ATTR t_vdp vdp;
 
 
 /* Return values from the V counter */
