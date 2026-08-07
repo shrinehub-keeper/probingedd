@@ -1,0 +1,63 @@
+menu "Probing EDD (ESP32-CAM Game Gear/SMS emulator)"
+
+    menu "WiFi / MJPEG streaming"
+
+        config PROBINGEDD_WIFI_AP_SSID
+            string "WiFi access point SSID"
+            default "probingedd"
+            help
+                The ESP32-CAM has no display, so it hosts its own WiFi access
+                point rather than joining an existing network. Connect to
+                this SSID and open http://192.168.4.1/ in a browser to watch
+                gameplay.
+
+        config PROBINGEDD_WIFI_AP_PASSWORD
+            string "WiFi access point password (8+ chars, empty = open)"
+            default "smsplusgg"
+
+        config PROBINGEDD_WIFI_AP_CHANNEL
+            int "WiFi access point channel"
+            range 1 13
+            default 1
+
+        config PROBINGEDD_STREAM_JPEG_QUALITY
+            int "MJPEG stream JPEG quality (1-100)"
+            range 1 100
+            default 60
+
+        config PROBINGEDD_STREAM_FPS
+            int "MJPEG stream target frame rate"
+            range 1 30
+            default 15
+            help
+                The emulator itself always runs at full speed (50/60Hz);
+                this only controls how often a rendered frame is JPEG
+                encoded and broadcast to browsers, to keep CPU/WiFi
+                headroom for the emulator and Bluetooth stack.
+
+        config PROBINGEDD_STREAM_MAX_JPEG_BYTES
+            int "Max JPEG frame size (bytes)"
+            default 65536
+            help
+                Upper bound on one encoded frame, allocated once in PSRAM.
+                The emulated screen is small, low-detail pixel art, so
+                encoded frames are normally a few KB; this just needs to be
+                comfortably above the worst case at the configured quality.
+
+    endmenu
+
+    menu "SD card (ROM storage)"
+
+        comment "Uses the ESP32 SDMMC peripheral's slot 1 pins (CLK=14, CMD=15, D0=2), which is how AI-Thinker ESP32-CAM boards wire their SD card slot. Not configurable: those pins are fixed in hardware on the original ESP32."
+
+        config PROBINGEDD_ROM_PATH
+            string "Fixed ROM path on the SD card (optional)"
+            default ""
+            help
+                If set, this exact file is loaded on boot (e.g.
+                "/sdcard/sonic.gg"). If left empty, the first *.gg or *.sms
+                file found in the root of the SD card is used instead.
+
+    endmenu
+
+endmenu

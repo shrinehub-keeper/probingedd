@@ -1,0 +1,56 @@
+#
+# probingedd - Game Gear/SMS emulator for ESP32-CAM
+# Default sdkconfig for the AI-Thinker ESP32-CAM module (plain ESP32, 4MB flash + PSRAM).
+#
+
+CONFIG_IDF_TARGET="esp32"
+
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+
+CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+CONFIG_ESP32_XTAL_FREQ_AUTO=y
+
+#
+# PSRAM - the ROM buffer, framebuffer and JPEG scratch buffers live here so
+# WiFi/BT stacks have enough internal DRAM to run alongside the emulator.
+#
+CONFIG_SPIRAM=y
+CONFIG_SPIRAM_USE_MALLOC=y
+CONFIG_SPIRAM_MALLOC_ALWAYSINTERNAL=16384
+
+#
+# Bluetooth (classic BR/EDR + BLE, needed by Bluepad32 for DS4/Wiimote/etc)
+#
+CONFIG_BT_ENABLED=y
+CONFIG_BT_CONTROLLER_ONLY=y
+CONFIG_BTDM_CTRL_MODE_BTDM=y
+# Should be at least one more than CONFIG_BLUEPAD32_MAX_DEVICES.
+CONFIG_BTDM_CTRL_BR_EDR_MAX_ACL_CONN=5
+CONFIG_BTDM_CTRL_BLE_MAX_CONN=5
+CONFIG_BTDM_CTRL_BR_EDR_MAX_SYNC_CONN=0
+CONFIG_BTDM_CTRL_AUTO_LATENCY=y
+CONFIG_BTDM_CTRL_MODEM_SLEEP=n
+
+CONFIG_BLUEPAD32_MAX_DEVICES=2
+CONFIG_BLUEPAD32_PLATFORM_CUSTOM=y
+# Needs to be disabled: we have no I2S mic/speaker on the BTstack side.
+CONFIG_BTSTACK_AUDIO=n
+
+#
+# WiFi - runs at the same time as classic BT, coexistence must stay on.
+#
+CONFIG_ESP_WIFI_ENABLED=y
+CONFIG_ESP_COEX_SW_COEXIST_ENABLE=y
+
+#
+# FreeRTOS
+#
+CONFIG_FREERTOS_HZ=1000
+
+#
+# The emulator core + Bluepad32/BTstack callbacks are all plain C.
+#
+CONFIG_COMPILER_CXX_EXCEPTIONS=n
