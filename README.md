@@ -10,6 +10,7 @@ original version of the emulator core had an incompatible license; the EightyOne
 GPL licensed.
 
 ---
+
 ## You fool
 
 This is actually for an ESP32-CAM: its camera isn't working, so instead of a display it connects
@@ -39,6 +40,10 @@ displays were harmed (or hunted for) making this.
 The core Z80/VDP/PSG emulation in `components/smsplus` is untouched and hardware-agnostic; only
 the ESP32-CAM-specific glue in `components/smsplus-esp32`, `components/gamepad-hal`,
 `components/mjpeg-stream`, `components/board-esp32cam` and `main/` changed.
+
+## WARNING!
+
+I've tested this with Sonic Triple Trouble, and it is not good **AT ALL** (EIGHT FPS). But hey, all of that is cuz of the wifi streaming. And at least it runs (good enough for a PoC ig)
 
 ### Hardware
 
@@ -77,7 +82,9 @@ boards already use for the camera's SD slot.
    ```sh
    idf.py set-target esp32
    idf.py build
-   idf.py -p /dev/ttyUSB0 flash monitor
+   # check where the kernel put the ESP32 in
+   ls /dev/ttyUSB* /dev/ttyACM* # if it fails completely, reconnect and try again
+   idf.py -p /dev/ttyUSB0 (or whatever showed in ls) flash 
    ```
 
 `idf.py` will also pull down `esp_new_jpeg` automatically via the ESP-IDF Component Manager the
@@ -86,14 +93,13 @@ first time you build (see `components/mjpeg-stream/idf_component.yml`).
 ### Configuring
 
 `idf.py menuconfig` -> "Probing EDD (ESP32-CAM Game Gear/SMS emulator)" has the settings you're
-most likely to want to change: the WiFi AP SSID/password, MJPEG quality/target frame rate, and a
+most likely to want to change: MJPEG quality/target frame rate, and a
 fixed ROM path if you don't want auto-detection off the SD card.
 
 ### Using it
 
 1. Put one or more `.gg`/`.sms` ROMs on a FAT-formatted SD card and insert it.
-2. Power up the board, then pair a DS4 or Wiimote with it (Bluepad32 starts scanning and
+2. Power up the board, then pair your BT controller (Bluepad32 starts scanning and
    auto-connecting on boot; put the controller in pairing mode as usual).
-3. Connect to the `probingedd` WiFi access point it creates (SSID/password configurable, see
-   above) and open `http://192.168.4.1/` in a browser to watch.
+3. Connect to your AP specified in the config, then `idf.py monitor` and go to the IP it tells you to go to. 
 4. Hold the controller's system/PS/Home button for a soft reset.
